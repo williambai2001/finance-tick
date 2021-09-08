@@ -1,0 +1,36 @@
+{
+  "name": "finance-tick",
+  "version": "1.0.0",
+  "description": "finance stock tick service.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/williambai2001/finance-tick.git"
+  },
+  "keywords": [
+    "finance",
+    "stock",
+    "tick"
+  ],
+  "author": "William Bai",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/williambai2001/finance-tick/issues"
+  },
+  "homepage": "https://github.com/williambai2001/finance-tick#readme",
+  "dependencies": {
+    "iconv-lite": "^0.6.3",
+    "moleculer": "^0.14.16",
+    "moleculer-repl": "^0.6.6",
+    "moment": "^2.29.1",
+    "superagent": "^6.1.0",
+    "superagent-prefix": "0.0.2",
+    "underscore": "^1.13.1"
+  },
+  "devDependencies": {
+    "jest": "^27.1.0"
+  }
+}
