@@ -13,7 +13,6 @@ const broker = new ServiceBroker({
 			formatter: 'full',
 		},
 	},
-
 });
 
 broker.loadService(path.join(__dirname,'../services/tick.service.js'));

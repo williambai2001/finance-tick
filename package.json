@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/williambai2001/finance-tick#readme",
   "dependencies": {
+    "dotenv": "^10.0.0",
     "iconv-lite": "^0.6.3",
     "moleculer": "^0.14.16",
     "moleculer-repl": "^0.6.6",
