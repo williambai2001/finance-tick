@@ -25,8 +25,12 @@
     "dotenv": "^10.0.0",
     "iconv-lite": "^0.6.3",
     "moleculer": "^0.14.16",
+    "moleculer-db": "^0.8.15",
+    "moleculer-db-adapter-sequelize": "^0.2.11",
     "moleculer-repl": "^0.6.6",
     "moment": "^2.29.1",
+    "mysql2": "^2.3.0",
+    "sequelize": "^6.6.5",
     "superagent": "^6.1.0",
     "superagent-prefix": "0.0.2",
     "underscore": "^1.13.1"

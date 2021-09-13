@@ -3,7 +3,7 @@ const { ServiceBroker } = require('moleculer');
 
 const broker = new ServiceBroker({
 	namespace: 'development',
-	nodeID: 'tick-service',
+	nodeID: 'minute-service',
 
 	logger: {
 		type: 'Console',
@@ -15,7 +15,7 @@ const broker = new ServiceBroker({
 	},
 });
 
-broker.loadService(path.join(__dirname,'../services/tick.service.js'));
+broker.loadService(path.join(__dirname,'../src/services/minute.service.js'));
 
 broker.start();
 broker.repl();
