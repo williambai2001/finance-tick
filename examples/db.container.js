@@ -16,7 +16,11 @@ DbService.adapter = new SqlAdapter(process.env.DB_DATABASE,process.env.DB_USER,p
 	}
 });
 
-const broker = new ServiceBroker();
+const broker = new ServiceBroker({
+	namespace: 'development',
+	nodeID: 'db-service',
+	transporter: 'TCP',
+});
 
 broker.createService({
 	name: 'SymbolDAO',
@@ -55,8 +59,8 @@ broker.createService({
 });
 
 broker.start()
-	.then(()=>broker.call('SymbolDAO.create',{symbol:'sh000001',name:'sh000001'}))
-	.then(()=>broker.call('CategoryDAO.create',{name:'category1',description:'desc1'}))
+	// .then(()=>broker.call('SymbolDAO.create',{symbol:'sh000001',name:'sh000001'}))
+	// .then(()=>broker.call('CategoryDAO.create',{name:'category1',description:'desc1'}))
 	.then(()=>broker.call('Min5DAO.create',{symbol:'sh000001',time:'2021-01-01 09:30:00',open:123,close:124,high:125,low:122,volume:123456}))
 	.then(()=>broker.call('Min5DAO.create',{symbol:'sh000001',time:'2021-01-01 09:35:00',open:123,close:124,high:125,low:122,volume:123456}))
 	.then(broker.repl());

@@ -4,7 +4,7 @@ const { ServiceBroker } = require('moleculer');
 const broker = new ServiceBroker({
 	namespace: 'development',
 	nodeID: 'minute-service',
-
+	transporter: 'TCP',
 	logger: {
 		type: 'Console',
 		options: {

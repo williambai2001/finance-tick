@@ -6,7 +6,6 @@ module.exports = {
 	name: 'Symbol',
 
 	mixins: [],
-
 	actions: {
 		get: {
 			handler(ctx){

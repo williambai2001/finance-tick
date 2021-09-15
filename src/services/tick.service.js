@@ -14,6 +14,9 @@ module.exports = exports = {
 
 	},
 	mixins: [methods],
+	dependencies: [
+		'Min5DAO',
+	],
 	actions: {
 		//** get last tick
 		get: {
