@@ -18,7 +18,7 @@ DbService.adapter = new SqlAdapter(process.env.DB_DATABASE,process.env.DB_USER,p
 
 const broker = new ServiceBroker({
 	namespace: 'development',
-	nodeID: 'db-service',
+	nodeID: `db-service-${process.pid}`,
 	transporter: 'TCP',
 });
 
