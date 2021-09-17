@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const moment = require('moment');
 const _ = require('underscore');
-const {} = require('../lib/dotenv');
+const {} = require('../helpers/dotenv');
 const methods = require('../mixins/methods');
 
 module.exports = exports = {
@@ -59,7 +59,12 @@ module.exports = exports = {
 		},
 	},
 	events: {
-
+		'tick.updated': {
+			handler(other){
+				this.logger.info('tick is updated.');
+				this.logger.info(other);
+			},
+		},
 	},
 	methods: {
 		update5(){

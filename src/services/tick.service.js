@@ -4,7 +4,7 @@ const moment = require('moment');
 const _ = require('underscore');
 const request = require('superagent');
 const iconv = require('iconv-lite');
-const {} = require('../lib/dotenv');
+const {} = require('../helpers/dotenv');
 const methods = require('../mixins/methods');
 
 module.exports = exports = {
@@ -126,7 +126,7 @@ module.exports = exports = {
 		this.loop_interval = 30000;
 		this.interval_instance = null;
 		this.codes = ['000001~000999','300000~301000'];
-		this.symbols = ['sh000001'];
+		this.symbols = ['sh000001','sh000002','sh000003'];
 		this.blacklist = [];
 		this.SYMBOLS_TICK_MAX = 5;
 		this.ticks = [];
@@ -149,6 +149,9 @@ module.exports = exports = {
 			if(this.ticks.length>this.SYMBOLS_TICK_MAX) this.ticks.shift();
 			await this.requestTick(this.symbols).then((tick)=>this.ticks.push(tick)).catch(this.logger.error);
 			this.loop_time = (new Date).getTime();
+			//** emit 'tick.updated' event
+			this.broker.emit('tick.updated',this.ticks.slice(-1)[0]);
+			this.logger.info(`${today} ${time} tick is updated.`);
 			// console.log(this.ticks);
 			// console.log(this.ticks.length);
 		},(deltaTime>this.loop_interval) ? 0 : (this.loop_interval-deltaTime));

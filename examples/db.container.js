@@ -4,7 +4,7 @@ const DbService = require('moleculer-db');
 const SqlAdapter = require('moleculer-db-adapter-sequelize');
 const Sequelize = require("sequelize");
 //** 配置文件存入process.env中
-const {} = require('../src/lib/dotenv');
+const {} = require('../src/helpers/dotenv');
 
 
 DbService.adapter = new SqlAdapter(process.env.DB_DATABASE,process.env.DB_USER,process.env.DB_PASS,{

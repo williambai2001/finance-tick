@@ -1,5 +1,5 @@
 const _ = require('underscore');
-const {} = require('../lib/dotenv');
+const {} = require('../helpers/dotenv');
 
 module.exports = {
 	name: 'TradeDate',
