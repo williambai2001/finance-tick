@@ -16,8 +16,8 @@ module.exports = exports = {
 		},
 		//** ignore on time which is off on trade.
 		timeIgnore(date){
-			if(moment(date,'HH:mm:ss').isBetween(moment('09:30:00','HH:mm:ss'),moment('11:31:00','HH:mm:ss')) || 
-				moment(date,'HH:mm:ss').isBetween(moment('13:00:00','HH:mm:ss'),moment('15:01:00','HH:mm:ss'))) return false;
+			if(moment(date,'HH:mm:ss').isBetween(moment('09:30:00','HH:mm:ss'),moment('11:30:00','HH:mm:ss')) || 
+				moment(date,'HH:mm:ss').isBetween(moment('13:00:00','HH:mm:ss'),moment('15:00:00','HH:mm:ss'))) return false;
 			return true;
 		},
 		//** request symbols
