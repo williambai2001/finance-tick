@@ -2,7 +2,7 @@ const _ = require('underscore');
 const moment = require('moment');
 const TickFunc = require('../../src/funcs/tick.func');
 
-describe('tick.func.',()=>{
+describe('tick.func',()=>{
 
 	it('.dailyIgnore()',()=>{
 		expect(TickFunc).toHaveProperty('getHolidays');

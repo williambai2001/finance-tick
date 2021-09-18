@@ -33,6 +33,7 @@
     "sequelize": "^6.6.5",
     "superagent": "^6.1.0",
     "superagent-prefix": "0.0.2",
+    "ta.js": "^1.4.6",
     "underscore": "^1.13.1"
   },
   "devDependencies": {
