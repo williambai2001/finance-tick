@@ -76,8 +76,11 @@ describe('segment.func',()=>{
 		expect(success).toBe(false);
 		console.log(success);
 	});
-	it('.transformKneePoint()',()=>{
-
+	it('.transformKneePoint()',async ()=>{
+		var ticks = [12,13,14,15,13,14,12,11,10,10,12];
+		var indicators = [0,0,0,0,1,0,0,0,-1,0,1];
+		var transformedIndex = await SegmentFunc.transformKneePoint(ticks,indicators).catch(console.error);
+		console.log(transformedIndex); 
 	});
 	it('.getSegmentIndex()',()=>{
 

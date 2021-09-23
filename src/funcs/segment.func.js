@@ -72,8 +72,38 @@ const Segment = {
 		});
 	},
 
-	transformKneePoint: function(){
-
+	/**
+	 * 由indicator指标表示的拐点序列，转换为ticks表示的拐点序列
+	 * @param  {[type]} ticks      [description]
+	 * @param  {[type]} indicators [description]
+	 * @return {[type]}            [description]
+	 */
+	transformKneePoint: function(ticks,indicators){
+		if(_.isUndefined(ticks) || _.isUndefined(indicators)) return Promise.reject('arguments missed.');
+		if(ticks.length != indicators.length) return Promise.reject('ticks length is not same as indicators length.');
+		let transformedIndex = [];
+		transformedIndex = _.map(ticks,()=>0);
+		let prevId;
+		_.each(indicators,(ind,index)=>{
+			if(ind==0) return;
+			if(_.isUndefined(prevId)){
+				prevId = index;
+				return;
+			}
+			if(Math.sign(indicators[prevId]) != Math.sign(ind)) return;
+			let partial = ticks.slice(prevId,index);
+			if(ind<0){
+				let max = _.max(partial);
+				let maxIndex = prevId + _.indexOf(partial,max);
+				transformedIndex[maxIndex] = 1;
+			}else{
+				let min = _.min(partial);
+				let minIndex = prevId + _.indexOf(partial,min);
+				transformedIndex[minIndex] = -1;
+			}
+			prevId = index;
+		});
+		return Promise.resolve(transformedIndex);
 	},
 
 	getSegmentIndex: function(ticks){
