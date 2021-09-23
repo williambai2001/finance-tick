@@ -14,9 +14,7 @@ module.exports = exports = {
 
 	},
 	mixins: [methods],
-	dependencies: [
-		'Min5DAO',
-	],
+	dependencies: [],
 	actions: {
 		//** get last tick
 		get: {
@@ -131,8 +129,8 @@ module.exports = exports = {
 		this.SYMBOLS_TICK_MAX = 5;
 		this.ticks = [];
 	},
-	started(){
 
+	started(){
 		//** periodic fetch tick
 		let deltaTime = (((new Date).getTime() - this.loop_time)/1000).toFixed(0);
 		this.interval_instance = setInterval(async ()=>{
@@ -156,7 +154,8 @@ module.exports = exports = {
 			// console.log(this.ticks.length);
 		},(deltaTime>this.loop_interval) ? 0 : (this.loop_interval-deltaTime));
 	},
-	stoped(){
+
+	stopped(){
 		this.interval_instance && clearInterval(this.interval_instance);
 	},
 };
