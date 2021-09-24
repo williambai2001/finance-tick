@@ -2,6 +2,7 @@ const _ = require('underscore');
 const moment = require('moment');
 const {ServiceBroker} = require('moleculer');
 const TickServiceSchema = require('../../src/services/tick.service');
+const request = require('superagent');
 
 describe('tick.service',()=>{
 	let broker = new ServiceBroker({logger: false});
@@ -12,18 +13,30 @@ describe('tick.service',()=>{
 		beforeAll(()=>broker.start());
 		afterAll(()=>broker.stop());
 		it('.get()',async ()=>{
+			console.log(request);
+			console.log(request.get.toString());
+			console.log(request.toString());
+			console.log(request.Request.toString());
+			console.log(request.Request.prototype);
+			console.log(request.Request.prototype.query.toString());
+
+			// let spy = jest.spyOn(request.Request.prototype,'query');
+			// spy.mockResolvedValue({status:'mocked'});
+
+			request.Request.prototype.query = jest.fn(()=>Promise.resolve({symbol:'sh000001'}));
+
 			const tick = await broker.call('Tick.get');
-			// console.log(`tick:`, tick);
+			console.log(`tick:`, tick);
 			expect(tick).toBeInstanceOf(Object);
 		});
-		it('.getAll()',async ()=>{
+		xit('.getAll()',async ()=>{
 			const ticks = await broker.call('Tick.getAll');
 			// console.log(`ticks:`, ticks);
 			expect(ticks).toBeInstanceOf(Array);
 
 		});
 	});
-	describe('.methods',()=>{
+	xdescribe('.methods',()=>{
 		it('.requestTick()',async ()=>{
 			let symbols = ['sh000001'];
 			let tick = await tickService.requestTick(symbols).catch(console.error);
