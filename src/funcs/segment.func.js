@@ -22,12 +22,27 @@ const Segment = {
 		});
 	},
 
-	getKneePoint: function(dat){
-		return new Promise((resolve,reject)=>{
-			let tmp = _.map(dat,(d)=>{
-				return Math.sign(d);
+	getKneePoint: function(dat,period){
+		return new Promise(async (resolve,reject)=>{
+			dat = await Segment.diff(dat);
+			dat = _.map(dat,Math.sign);
+			dat = await Segment.diff(dat);
+			let prevId,nextId;
+			dat = _.map(dat,(d,index)=>{
+				if(Math.abs(d)<2) return 0;
+				if(_.isUndefined(nextId)){
+					nextId = index;
+				}else if(_.isUndefined(prevId)){
+					prevId = nextId;
+				}else{
+					prevId = nextId;
+					nextId = index;
+				}
+				return -Math.sign(d);
 			});
-			resolve(tmp);
+			//** 最后一个极值不满足周期长度，取消极值点
+			if(period && nextId-prevId<period) dat[nextId] = 0;
+			resolve(dat);
 		});
 	},
 
@@ -43,21 +58,13 @@ const Segment = {
 		return Promise.resolve(matrix);
 	},
 
-	isKneePointAvalible: function(row){
+	isKneePointAvalible: (row)=>{
 		let up = 0;
 		let down = 0;
-		let tmp = _.map(row,(d,i)=>{
-			if(i==0) return 0;
-			let diff = Number(row[i])-Number(row[i-1]);
-			if(Math.abs(diff)==1) return 0;
-			return Math.sign(diff);
+		_.each(row,(d)=>{
+			if(Number(d)>0.1) up++;
+			if(Number(d)<-0.1) down++;
 		});
-		// console.log(`tmp=`,tmp)
-		_.each(tmp,(d)=>{
-			if(d>0) up++;
-			if(d<0) down++;
-		});
-		// console.log(`up=${up},down=${down}`)
 		return Promise.resolve((up<=1 && down<=1) ? true : false);
 	},
 
@@ -65,8 +72,9 @@ const Segment = {
 		return new Promise(async (resolve,reject)=>{
 			let matrix = await Segment.getMatrix(dat,period);
 			let success = true;
-			for await (let row of matrix){
-				if(!await Segment.isKneePointAvalible(row)) success = false;
+			for (let row of matrix){
+				let tmp = await Segment.isKneePointAvalible(row);
+				if(!tmp) success = false;
 			}
 			resolve(success);
 		});
@@ -90,9 +98,10 @@ const Segment = {
 				prevId = index;
 				return;
 			}
+			console.log(`prevId=${indicators[prevId]},ind=${ind}`)
 			if(Math.sign(indicators[prevId]) != Math.sign(ind)) return;
 			let partial = ticks.slice(prevId,index);
-			if(ind<0){
+			if(ind>0){
 				let max = _.max(partial);
 				let maxIndex = prevId + _.indexOf(partial,max);
 				transformedIndex[maxIndex] = 1;
@@ -106,14 +115,59 @@ const Segment = {
 		return Promise.resolve(transformedIndex);
 	},
 
-	getSegmentIndex: function(ticks){
-		return new Promise(async (resolve,reject)=>{
-			let sample = 1;
-			while(true){
-				let ma = await smooth(ticks,sample,true).catch(console.error);
-
+	transformKneePoint: (ticks,indicators)=>{
+		if(_.isUndefined(ticks) || _.isUndefined(indicators)) return Promise.reject('arguments missed.');
+		if(ticks.length != indicators.length) return Promise.reject('ticks length is not same as indicators length.');
+		let transformedIndex = [];
+		transformedIndex = _.map(ticks,()=>0);
+		let maxId;
+		_.each(indicators,(ind,index)=>{
+			if(ind>=0) return;
+			if(_.isUndefined(maxId)){
+				maxId = index;
+				return;
 			}
+			console.log(`maxId=${indicators[maxId]},ind=${ind}`)
+			let partial = ticks.slice(maxId,index);
+			let max = _.max(partial);
+			let maxIndex = maxId + _.indexOf(partial,max);
+			transformedIndex[maxIndex] = 1;
+			maxId = index;
 		});
+		let minId;
+		_.each(indicators,(ind,index)=>{
+			if(ind<=0) return;
+			if(_.isUndefined(minId)){
+				minId = index;
+				return;
+			}
+			let partial = ticks.slice(minId,index);
+			let min = _.min(partial);
+			let minIndex = minId + _.indexOf(partial,min);
+			transformedIndex[minIndex] = -1;
+			minId = index;
+		});
+		return Promise.resolve(transformedIndex);
+	},
+
+	getSegmentIndex: async (ticks,period)=>{
+		period = period || 5;
+		let result;
+		let sample = 1;
+		while(true){
+			if(sample>30) break;
+			let ma = await Segment.smooth(ticks,sample,true);
+			let kneePoints = await Segment.getKneePoint(ma,period);
+			if(await Segment.isSegmented(kneePoints,period)){
+				result = await Segment.transformKneePoint(ticks,kneePoints);
+				//** 调试
+				// result = kneePoints;
+				break;
+			}
+			sample++;
+		}
+		console.log(`sample: ${sample}`);
+		return result;
 	},
 };
 
