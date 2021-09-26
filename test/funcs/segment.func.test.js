@@ -62,22 +62,22 @@ describe('segment.func',()=>{
 	});
 	it('.getSegmentIndex()',async ()=>{
 		let data = require('../fixtures/126.net.daily.close.json');
-		let partial = -100;
+		let startId = -500;
+		let endId = -1;
 		let name = data.name;
 		let symbol = data.symbol;
-		let times = data.times.slice(partial);
-		let closes = data.closes.slice(partial);
+		let times = data.times.slice(startId,endId);
+		let closes = data.closes.slice(startId,endId);
 		console.log(`symbol:${symbol},times.length:${times.length}`);
 		var period = 5;
 		var segmentIndex = await SegmentFunc.getSegmentIndex(closes,period);
 		// console.log(segmentIndex);
 		// return;
 		var KneePointTimeIndex = _.map(segmentIndex,(s,i)=>{
-			if(Math.abs(s)>0) return s*times[i];
-			return 0;
+			return s*times[i];
 		});
 		KneePointTimeIndex = _.filter(KneePointTimeIndex,(s)=>{
-			if(s!=0) return s;
+			if(Math.abs(s)>0) return s;
 		});
 		console.log(KneePointTimeIndex);
 	});

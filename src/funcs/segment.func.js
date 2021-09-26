@@ -86,7 +86,7 @@ const Segment = {
 	 * @param  {[type]} indicators [description]
 	 * @return {[type]}            [description]
 	 */
-	transformKneePoint: function(ticks,indicators){
+	transformKneePoint1: function(ticks,indicators){
 		if(_.isUndefined(ticks) || _.isUndefined(indicators)) return Promise.reject('arguments missed.');
 		if(ticks.length != indicators.length) return Promise.reject('ticks length is not same as indicators length.');
 		let transformedIndex = [];
@@ -120,32 +120,33 @@ const Segment = {
 		if(ticks.length != indicators.length) return Promise.reject('ticks length is not same as indicators length.');
 		let transformedIndex = [];
 		transformedIndex = _.map(ticks,()=>0);
-		let maxId;
+		let prevMaxId;
 		_.each(indicators,(ind,index)=>{
-			if(ind>=0) return;
-			if(_.isUndefined(maxId)){
-				maxId = index;
+			if(Number(ind)>=0) return;
+			if(_.isUndefined(prevMaxId)){
+				prevMaxId = index;
 				return;
 			}
-			console.log(`maxId=${indicators[maxId]},ind=${ind}`)
-			let partial = ticks.slice(maxId,index);
+			console.log(`prevMaxId=${prevMaxId},index=${index}`)
+			let partial = ticks.slice(prevMaxId,index);
 			let max = _.max(partial);
-			let maxIndex = maxId + _.indexOf(partial,max);
+			let maxIndex = prevMaxId + _.indexOf(partial,max);
 			transformedIndex[maxIndex] = 1;
-			maxId = index;
+			prevMaxId = index;
 		});
-		let minId;
+		let prevMinId;
 		_.each(indicators,(ind,index)=>{
-			if(ind<=0) return;
-			if(_.isUndefined(minId)){
-				minId = index;
+			if(Number(ind)<=0) return;
+			if(_.isUndefined(prevMinId)){
+				prevMinId = index;
 				return;
 			}
-			let partial = ticks.slice(minId,index);
+			console.log(`prevMinId=${prevMinId},index=${index}`)
+			let partial = ticks.slice(prevMinId,index);
 			let min = _.min(partial);
-			let minIndex = minId + _.indexOf(partial,min);
+			let minIndex = prevMinId + _.indexOf(partial,min);
 			transformedIndex[minIndex] = -1;
-			minId = index;
+			prevMinId = index;
 		});
 		return Promise.resolve(transformedIndex);
 	},
@@ -155,7 +156,7 @@ const Segment = {
 		let result;
 		let sample = 1;
 		while(true){
-			if(sample>30) break;
+			if(sample>100) break;
 			let ma = await Segment.smooth(ticks,sample,true);
 			let kneePoints = await Segment.getKneePoint(ma,period);
 			if(await Segment.isSegmented(kneePoints,period)){
@@ -164,9 +165,10 @@ const Segment = {
 				// result = kneePoints;
 				break;
 			}
+			// console.log(`sample:${sample}`);
 			sample++;
 		}
-		console.log(`sample: ${sample}`);
+		// console.log(`sample: ${sample}`);
 		return result;
 	},
 };
